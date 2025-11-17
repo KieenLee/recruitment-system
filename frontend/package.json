@@ -1,0 +1,29 @@
+{
+  "name": "recruitment-ai-system",
+  "version": "1.0.0",
+  "description": "A web application for AI-powered recruitment automation.",
+  "main": "src/main.jsx",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "vite": "^2.0.0",
+    "eslint": "^7.0.0",
+    "eslint-plugin-react": "^7.0.0"
+  },
+  "keywords": [
+    "recruitment",
+    "ai",
+    "automation",
+    "web"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
