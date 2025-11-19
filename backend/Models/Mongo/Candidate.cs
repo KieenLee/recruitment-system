@@ -7,11 +7,8 @@ public class Candidate
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
-    /// <summary>
-    /// JobId from SQL Server - This is the "bridge" between SQL and MongoDB
-    /// </summary>
     [BsonElement("jobId")]
     public int JobId { get; set; }
 
@@ -24,11 +21,11 @@ public class Candidate
     [BsonElement("phone")]
     public string Phone { get; set; } = string.Empty;
 
-    [BsonElement("cvFileName")]
-    public string CvFileName { get; set; } = string.Empty;
-
     [BsonElement("cvFilePath")]
     public string CvFilePath { get; set; } = string.Empty;
+
+    [BsonElement("cvFileName")]
+    public string CvFileName { get; set; } = string.Empty;
 
     [BsonElement("status")]
     public string Status { get; set; } = "Pending"; // Pending, Approved, Rejected
@@ -37,22 +34,23 @@ public class Candidate
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
     [BsonElement("aiAnalysis")]
-    public AiAnalysis? AiAnalysis { get; set; }
+    public CvAnalysis? AiAnalysis { get; set; }
 }
 
-public class AiAnalysis
+// CV Analysis Result from AI
+public class CvAnalysis
 {
     [BsonElement("overallScore")]
-    public int OverallScore { get; set; }
+    public double OverallScore { get; set; }
 
     [BsonElement("summary")]
     public string Summary { get; set; } = string.Empty;
 
-    [BsonElement("criteriaEvaluation")]
-    public List<CriterionEvaluation> CriteriaEvaluation { get; set; } = new();
-
     [BsonElement("extractedInformation")]
     public ExtractedInformation ExtractedInformation { get; set; } = new();
+
+    [BsonElement("criteriaEvaluation")]
+    public List<CriterionEvaluation> CriteriaEvaluation { get; set; } = new();
 
     [BsonElement("redFlags")]
     public List<string> RedFlags { get; set; } = new();
@@ -61,21 +59,7 @@ public class AiAnalysis
     public DateTime AnalyzedAt { get; set; } = DateTime.UtcNow;
 }
 
-public class CriterionEvaluation
-{
-    [BsonElement("criterion")]
-    public string Criterion { get; set; } = string.Empty;
-
-    [BsonElement("isMet")]
-    public string IsMet { get; set; } = string.Empty; // "true", "false", "partially"
-
-    [BsonElement("evidence")]
-    public string Evidence { get; set; } = string.Empty;
-
-    [BsonElement("score")]
-    public int Score { get; set; }
-}
-
+// ✅ Extracted Information from CV
 public class ExtractedInformation
 {
     [BsonElement("name")]
@@ -95,4 +79,23 @@ public class ExtractedInformation
 
     [BsonElement("experience")]
     public List<string> Experience { get; set; } = new();
+
+    [BsonElement("yearsOfExperience")]
+    public int YearsOfExperience { get; set; }
+}
+
+// ✅ Evaluation of each job requirement criterion
+public class CriterionEvaluation
+{
+    [BsonElement("criterion")]
+    public string Criterion { get; set; } = string.Empty;
+
+    [BsonElement("score")]
+    public double Score { get; set; }
+
+    [BsonElement("isMet")]
+    public string IsMet { get; set; } = "false"; // "true", "false", "partially"
+
+    [BsonElement("evidence")]
+    public string Evidence { get; set; } = string.Empty;
 }

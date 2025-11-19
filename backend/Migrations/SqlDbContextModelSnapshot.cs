@@ -76,7 +76,7 @@ namespace Backend.Migrations
                         {
                             Id = 1,
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6314),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Leading technology company specializing in software development",
                             Industry = "Technology",
                             Name = "Tech Corp",
@@ -86,7 +86,7 @@ namespace Backend.Migrations
                         {
                             Id = 2,
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6317),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Premier financial services provider",
                             Industry = "Finance",
                             Name = "Finance Solutions Ltd",
@@ -96,7 +96,7 @@ namespace Backend.Migrations
                         {
                             Id = 3,
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6320),
+                            CreatedDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Healthcare technology innovator",
                             Industry = "Healthcare",
                             Name = "Health Plus",
@@ -198,12 +198,12 @@ namespace Backend.Migrations
                             Id = 1,
                             CompanyId = 1,
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6491),
-                            Description = "We are seeking an experienced .NET developer to join our team...",
+                            CreatedDate = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "We are seeking an experienced .NET developer to join our team. You will work on cutting-edge projects using .NET Core, Azure, and microservices architecture.",
                             EmploymentType = "Full-time",
                             Location = "Ho Chi Minh City",
-                            PostedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6488),
-                            Requirements = "5+ years of experience with .NET Core, C#, SQL Server, and Azure",
+                            PostedDate = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Requirements = "5+ years of experience with .NET Core, C#, SQL Server, and Azure. Strong understanding of design patterns and SOLID principles.",
                             SalaryMax = 3500m,
                             SalaryMin = 2000m,
                             Status = "Open",
@@ -214,12 +214,12 @@ namespace Backend.Migrations
                             Id = 2,
                             CompanyId = 1,
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6497),
-                            Description = "Join our dynamic team as a Frontend Developer...",
+                            CreatedDate = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Join our dynamic team as a Frontend Developer. Work with modern technologies and build responsive, user-friendly web applications.",
                             EmploymentType = "Full-time",
                             Location = "Hanoi",
-                            PostedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6496),
-                            Requirements = "3+ years of experience with React, TypeScript, and modern frontend tools",
+                            PostedDate = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Requirements = "3+ years of experience with React, TypeScript, and modern frontend tools. Experience with Redux, React Query, and testing frameworks.",
                             SalaryMax = 2500m,
                             SalaryMin = 1500m,
                             Status = "Open",
@@ -230,16 +230,32 @@ namespace Backend.Migrations
                             Id = 3,
                             CompanyId = 2,
                             CreatedBy = "System",
-                            CreatedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6501),
-                            Description = "Seeking a detail-oriented Financial Analyst...",
+                            CreatedDate = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Seeking a detail-oriented Financial Analyst to join our team. Analyze financial data, create reports, and provide insights to management.",
                             EmploymentType = "Full-time",
                             Location = "Da Nang",
-                            PostedDate = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6500),
-                            Requirements = "Bachelor's degree in Finance, 2+ years experience in financial analysis",
+                            PostedDate = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Requirements = "Bachelor's degree in Finance or related field. 2+ years experience in financial analysis. Strong Excel and data visualization skills.",
                             SalaryMax = 2000m,
                             SalaryMin = 1200m,
                             Status = "Open",
                             Title = "Financial Analyst"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CompanyId = 1,
+                            CreatedBy = "System",
+                            CreatedDate = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Looking for a DevOps Engineer to manage our cloud infrastructure and CI/CD pipelines.",
+                            EmploymentType = "Full-time",
+                            Location = "Remote",
+                            PostedDate = new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Requirements = "Experience with Docker, Kubernetes, Azure/AWS, and CI/CD tools. Strong scripting skills in Bash or PowerShell.",
+                            SalaryMax = 3800m,
+                            SalaryMin = 2200m,
+                            Status = "Open",
+                            Title = "DevOps Engineer"
                         });
                 });
 
@@ -251,7 +267,7 @@ namespace Backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -270,7 +286,9 @@ namespace Backend.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -281,7 +299,7 @@ namespace Backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("Candidate");
+                        .HasDefaultValue("HR");
 
                     b.HasKey("Id");
 
@@ -290,19 +308,15 @@ namespace Backend.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("FullName")
-                        .IsUnique();
-
                     b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CompanyId = 0,
-                            CreatedAt = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6526),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@recruitment.com",
-                            FullName = "admin",
+                            FullName = "System Administrator",
                             IsActive = true,
                             PasswordHash = "AQAAAAEAACcQAAAAEHashed_Password_Here",
                             Role = "Admin"
@@ -310,10 +324,21 @@ namespace Backend.Migrations
                         new
                         {
                             Id = 2,
-                            CompanyId = 0,
-                            CreatedAt = new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6529),
-                            Email = "hr@recruitment.com",
-                            FullName = "hr_manager",
+                            CompanyId = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "hr@techcorp.com",
+                            FullName = "HR Manager",
+                            IsActive = true,
+                            PasswordHash = "AQAAAAEAACcQAAAAEHashed_Password_Here",
+                            Role = "HR"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CompanyId = 2,
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Email = "hr@financesolutions.com",
+                            FullName = "Finance HR",
                             IsActive = true,
                             PasswordHash = "AQAAAAEAACcQAAAAEHashed_Password_Here",
                             Role = "HR"
@@ -340,8 +365,7 @@ namespace Backend.Migrations
                     b.HasOne("Backend.Models.Sql.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Company");
                 });

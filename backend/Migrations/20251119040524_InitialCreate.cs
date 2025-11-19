@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAuditFields : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,10 +43,10 @@ namespace Backend.Migrations
                     FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "Candidate"),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "HR"),
+                    CompanyId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -56,7 +56,7 @@ namespace Backend.Migrations
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,9 +103,25 @@ namespace Backend.Migrations
                 columns: new[] { "Id", "CreatedBy", "CreatedDate", "Description", "Industry", "Logo", "Name", "UpdatedBy", "UpdatedDate", "Website" },
                 values: new object[,]
                 {
-                    { 1, "System", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6314), "Leading technology company specializing in software development", "Technology", null, "Tech Corp", null, null, "https://techcorp.example.com" },
-                    { 2, "System", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6317), "Premier financial services provider", "Finance", null, "Finance Solutions Ltd", null, null, "https://financesolutions.example.com" },
-                    { 3, "System", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6320), "Healthcare technology innovator", "Healthcare", null, "Health Plus", null, null, "https://healthplus.example.com" }
+                    { 1, "System", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Leading technology company specializing in software development", "Technology", null, "Tech Corp", null, null, "https://techcorp.example.com" },
+                    { 2, "System", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Premier financial services provider", "Finance", null, "Finance Solutions Ltd", null, null, "https://financesolutions.example.com" },
+                    { 3, "System", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Healthcare technology innovator", "Healthcare", null, "Health Plus", null, null, "https://healthplus.example.com" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CompanyId", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "Role" },
+                values: new object[] { 1, null, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "admin@recruitment.com", "System Administrator", true, "AQAAAAEAACcQAAAAEHashed_Password_Here", "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "JobPostings",
+                columns: new[] { "Id", "ClosingDate", "CompanyId", "CreatedBy", "CreatedDate", "Description", "EmploymentType", "Location", "PostedDate", "Requirements", "SalaryMax", "SalaryMin", "Status", "Title", "UpdatedBy", "UpdatedDate", "UserId" },
+                values: new object[,]
+                {
+                    { 1, null, 1, "System", new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "We are seeking an experienced .NET developer to join our team. You will work on cutting-edge projects using .NET Core, Azure, and microservices architecture.", "Full-time", "Ho Chi Minh City", new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "5+ years of experience with .NET Core, C#, SQL Server, and Azure. Strong understanding of design patterns and SOLID principles.", 3500m, 2000m, "Open", "Senior .NET Developer", null, null, null },
+                    { 2, null, 1, "System", new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "Join our dynamic team as a Frontend Developer. Work with modern technologies and build responsive, user-friendly web applications.", "Full-time", "Hanoi", new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "3+ years of experience with React, TypeScript, and modern frontend tools. Experience with Redux, React Query, and testing frameworks.", 2500m, 1500m, "Open", "Frontend React Developer", null, null, null },
+                    { 3, null, 2, "System", new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "Seeking a detail-oriented Financial Analyst to join our team. Analyze financial data, create reports, and provide insights to management.", "Full-time", "Da Nang", new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "Bachelor's degree in Finance or related field. 2+ years experience in financial analysis. Strong Excel and data visualization skills.", 2000m, 1200m, "Open", "Financial Analyst", null, null, null },
+                    { 4, null, 1, "System", new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "Looking for a DevOps Engineer to manage our cloud infrastructure and CI/CD pipelines.", "Full-time", "Remote", new DateTime(2025, 1, 15, 0, 0, 0, 0, DateTimeKind.Utc), "Experience with Docker, Kubernetes, Azure/AWS, and CI/CD tools. Strong scripting skills in Bash or PowerShell.", 3800m, 2200m, "Open", "DevOps Engineer", null, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -113,18 +129,8 @@ namespace Backend.Migrations
                 columns: new[] { "Id", "CompanyId", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "Role" },
                 values: new object[,]
                 {
-                    { 1, 0, new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6526), "admin@recruitment.com", "admin", true, "AQAAAAEAACcQAAAAEHashed_Password_Here", "Admin" },
-                    { 2, 0, new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6529), "hr@recruitment.com", "hr_manager", true, "AQAAAAEAACcQAAAAEHashed_Password_Here", "HR" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "JobPostings",
-                columns: new[] { "Id", "ClosingDate", "CompanyId", "CreatedBy", "CreatedDate", "Description", "EmploymentType", "Location", "PostedDate", "Requirements", "SalaryMax", "SalaryMin", "Status", "Title", "UpdatedBy", "UpdatedDate", "UserId" },
-                values: new object[,]
-                {
-                    { 1, null, 1, "System", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6491), "We are seeking an experienced .NET developer to join our team...", "Full-time", "Ho Chi Minh City", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6488), "5+ years of experience with .NET Core, C#, SQL Server, and Azure", 3500m, 2000m, "Open", "Senior .NET Developer", null, null, null },
-                    { 2, null, 1, "System", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6497), "Join our dynamic team as a Frontend Developer...", "Full-time", "Hanoi", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6496), "3+ years of experience with React, TypeScript, and modern frontend tools", 2500m, 1500m, "Open", "Frontend React Developer", null, null, null },
-                    { 3, null, 2, "System", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6501), "Seeking a detail-oriented Financial Analyst...", "Full-time", "Da Nang", new DateTime(2025, 11, 19, 4, 1, 14, 210, DateTimeKind.Utc).AddTicks(6500), "Bachelor's degree in Finance, 2+ years experience in financial analysis", 2000m, 1200m, "Open", "Financial Analyst", null, null, null }
+                    { 2, 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "hr@techcorp.com", "HR Manager", true, "AQAAAAEAACcQAAAAEHashed_Password_Here", "HR" },
+                    { 3, 2, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "hr@financesolutions.com", "Finance HR", true, "AQAAAAEAACcQAAAAEHashed_Password_Here", "HR" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -156,12 +162,6 @@ namespace Backend.Migrations
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_FullName",
-                table: "Users",
-                column: "FullName",
                 unique: true);
         }
 
