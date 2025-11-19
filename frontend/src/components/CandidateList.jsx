@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getCandidatesByJobId } from "../api/candidateService";
+import { candidateApi } from "../api/candidateService";
 import {
   User,
   Mail,
@@ -15,23 +15,25 @@ const CandidateList = ({ jobId }) => {
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState("All");
 
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
-        const data = await getCandidatesByJobId(jobId);
+        setLoading(true);
+        const data = await candidateApi.getCandidatesByJobId(jobId);
         setCandidates(data);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Failed to fetch candidates");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCandidates();
+    if (jobId) {
+      fetchCandidates();
+    }
   }, [jobId]);
-
-  const [selectedStatus, setSelectedStatus] = useState("All");
 
   const getStatusIcon = (status) => {
     switch (status.toLowerCase()) {
@@ -54,17 +56,49 @@ const CandidateList = ({ jobId }) => {
     return "score-low";
   };
 
+  const onViewDetails = (candidate) => {
+    console.log("View details:", candidate);
+  };
+
+  const onStatusUpdate = async (candidateId, newStatus) => {
+    try {
+      await candidateApi.updateCandidateStatus(jobId, candidateId, newStatus);
+      const data = await candidateApi.getCandidatesByJobId(jobId);
+      setCandidates(data);
+    } catch (err) {
+      console.error("Failed to update status:", err);
+      alert("Failed to update candidate status");
+    }
+  };
+
   const filteredCandidates =
     selectedStatus === "All"
       ? candidates
       : candidates.filter((c) => c.status === selectedStatus);
 
   if (loading) {
-    return <div>Loading candidates...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading candidates...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div>Error fetching candidates: {error}</div>;
+    return (
+      <div className="error-container">
+        <p>Error fetching candidates: {error}</p>
+      </div>
+    );
+  }
+
+  if (!candidates || candidates.length === 0) {
+    return (
+      <div className="empty-state">
+        <p>No candidates have applied to this job yet.</p>
+      </div>
+    );
   }
 
   return (
@@ -104,7 +138,7 @@ const CandidateList = ({ jobId }) => {
                   )}`}
                 >
                   <span className="score-value">
-                    {candidate.aiAnalysis.overallScore}
+                    {candidate.aiAnalysis.overallScore.toFixed(1)}
                   </span>
                   <span className="score-label">/10</span>
                 </div>
@@ -132,6 +166,22 @@ const CandidateList = ({ jobId }) => {
               <div className="ai-summary">
                 <h4>AI Analysis Summary</h4>
                 <p>{candidate.aiAnalysis.summary}</p>
+
+                {candidate.aiAnalysis.extractedInformation?.skills?.length >
+                  0 && (
+                  <div className="skills-preview">
+                    <strong>Key Skills:</strong>
+                    <div className="skill-tags">
+                      {candidate.aiAnalysis.extractedInformation.skills
+                        .slice(0, 5)
+                        .map((skill, idx) => (
+                          <span key={idx} className="skill-tag">
+                            {skill}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Briefcase,
@@ -11,8 +11,11 @@ import {
   Loader,
   Building2,
   DollarSign,
+  CheckCircle,
+  Clock,
+  TrendingUp,
 } from "lucide-react";
-import { jobPostingApi } from "../api/candidateService";
+import { jobPostingApi, candidateApi } from "../api/candidateService";
 import "../css/Dashboard.css";
 
 const Dashboard = () => {
@@ -20,25 +23,66 @@ const Dashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [stats, setStats] = useState({
+    totalJobs: 0,
+    activeJobs: 0,
+    totalCandidates: 0,
+    pendingReviews: 0,
+  });
+  const [recentJobs, setRecentJobs] = useState([]);
+  const [recentCandidates, setRecentCandidates] = useState([]);
 
   useEffect(() => {
-    fetchJobs();
+    fetchDashboardData();
   }, []);
 
   useEffect(() => {
     filterJobs();
   }, [jobs, searchTerm, statusFilter]);
 
-  const fetchJobs = async () => {
+  const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const data = await jobPostingApi.getAllJobs();
-      setJobs(data);
-      setFilteredJobs(data);
-    } catch (error) {
-      console.error("Error fetching jobs:", error);
+
+      // Fetch all jobs
+      const jobs = await jobPostingApi.getAllJobs();
+
+      // Calculate stats
+      const activeJobs = jobs.filter((job) => job.status === "Open");
+
+      // Fetch candidates for all active jobs
+      let allCandidates = [];
+      for (const job of activeJobs) {
+        try {
+          const candidates = await candidateApi.getCandidatesByJobId(job.id);
+          allCandidates = [...allCandidates, ...candidates];
+        } catch (err) {
+          console.error(`Error fetching candidates for job ${job.id}:`, err);
+        }
+      }
+
+      const pendingCandidates = allCandidates.filter(
+        (c) => c.status === "Pending"
+      );
+
+      setStats({
+        totalJobs: jobs.length,
+        activeJobs: activeJobs.length,
+        totalCandidates: allCandidates.length,
+        pendingReviews: pendingCandidates.length,
+      });
+
+      // Set recent jobs (top 5)
+      setRecentJobs(jobs.slice(0, 5));
+
+      // Set recent candidates (top 5)
+      setRecentCandidates(allCandidates.slice(0, 5));
+    } catch (err) {
+      console.error("Error fetching dashboard data:", err);
+      setError(err.message || "Failed to load dashboard data");
     } finally {
       setLoading(false);
     }
@@ -76,6 +120,36 @@ const Dashboard = () => {
     }
   };
 
+  // ✅ Safe date formatter
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (err) {
+      return "Invalid Date";
+    }
+  };
+
+  // ✅ Safe string truncate
+  const truncateText = (text, maxLength = 100) => {
+    if (!text) return "";
+    if (typeof text !== "string") return String(text);
+    return text.length > maxLength
+      ? text.substring(0, maxLength) + "..."
+      : text;
+  };
+
+  // ✅ Safe score formatter
+  const formatScore = (score) => {
+    if (score === undefined || score === null) return "N/A";
+    if (typeof score === "number") return score.toFixed(1);
+    return String(score);
+  };
+
   if (loading) {
     return (
       <div className="loading-screen">
@@ -85,8 +159,150 @@ const Dashboard = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="dashboard-error">
+        <p>Error: {error}</p>
+        <button onClick={fetchDashboardData}>Retry</button>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h1>Recruitment Dashboard</h1>
+        <button className="refresh-btn" onClick={fetchDashboardData}>
+          <TrendingUp size={20} />
+          Refresh
+        </button>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <div className="stat-icon briefcase">
+            <Briefcase size={24} />
+          </div>
+          <div className="stat-info">
+            <h3>{stats.totalJobs}</h3>
+            <p>Total Job Postings</p>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-icon active">
+            <CheckCircle size={24} />
+          </div>
+          <div className="stat-info">
+            <h3>{stats.activeJobs}</h3>
+            <p>Active Jobs</p>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-icon candidates">
+            <Users size={24} />
+          </div>
+          <div className="stat-info">
+            <h3>{stats.totalCandidates}</h3>
+            <p>Total Candidates</p>
+          </div>
+        </div>
+
+        <div className="stat-card">
+          <div className="stat-icon pending">
+            <Clock size={24} />
+          </div>
+          <div className="stat-info">
+            <h3>{stats.pendingReviews}</h3>
+            <p>Pending Reviews</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Jobs Section */}
+      <div className="dashboard-section">
+        <h2>Recent Job Postings</h2>
+        {recentJobs.length === 0 ? (
+          <p className="empty-message">No job postings yet</p>
+        ) : (
+          <div className="recent-jobs-list">
+            {recentJobs.map((job) => (
+              <div key={job.id} className="job-item">
+                <div className="job-header">
+                  <h3>{job.title || "Untitled Job"}</h3>
+                  <span
+                    className={`status-badge status-${(
+                      job.status || ""
+                    ).toLowerCase()}`}
+                  >
+                    {job.status || "Unknown"}
+                  </span>
+                </div>
+                <p className="job-company">
+                  {job.companyName || "Unknown Company"}
+                </p>
+                <p className="job-location">
+                  📍 {job.location || "Location not specified"}
+                </p>
+                <div className="job-meta">
+                  <span>📅 {formatDate(job.postedDate)}</span>
+                  <span>👥 {job.totalCandidates || 0} candidates</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Recent Candidates Section */}
+      <div className="dashboard-section">
+        <h2>Recent Candidates</h2>
+        {recentCandidates.length === 0 ? (
+          <p className="empty-message">No candidates yet</p>
+        ) : (
+          <div className="recent-candidates-list">
+            {recentCandidates.map((candidate) => (
+              <div key={candidate.id} className="candidate-item">
+                <div className="candidate-header">
+                  <div className="candidate-info">
+                    <h4>{candidate.fullName || "Unknown Candidate"}</h4>
+                    <p className="candidate-email">
+                      {candidate.email || "No email"}
+                    </p>
+                  </div>
+                  <span
+                    className={`status-badge status-${(
+                      candidate.status || "pending"
+                    ).toLowerCase()}`}
+                  >
+                    {candidate.status || "Pending"}
+                  </span>
+                </div>
+
+                {/* ✅ Safe rendering với optional chaining và fallbacks */}
+                {candidate.aiAnalysis && (
+                  <div className="ai-preview">
+                    <div className="score-badge">
+                      Score: {formatScore(candidate.aiAnalysis.overallScore)}/10
+                    </div>
+                    <p className="ai-summary">
+                      {truncateText(candidate.aiAnalysis.summary, 150)}
+                    </p>
+                  </div>
+                )}
+
+                <div className="candidate-meta">
+                  <span>📅 Applied: {formatDate(candidate.uploadedAt)}</span>
+                  {candidate.phone && <span>📞 {candidate.phone}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Header */}
       <div className="dashboard-header">
         <div className="header-content">
