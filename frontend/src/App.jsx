@@ -8,7 +8,7 @@ import JobList from "./components/JobList";
 import CandidateList from "./components/CandidateList";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HRLayout from "./components/HRLayout";
-import "./App.css";
+import "./css/App.css";
 
 function App() {
   return (
