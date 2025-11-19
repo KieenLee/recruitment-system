@@ -52,12 +52,6 @@
           "dependencies": {
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
-              "version": "[8.0.20, )"
-            },
-            "Microsoft.EntityFrameworkCore.Design": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
               "version": "[8.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
@@ -72,11 +66,15 @@
             },
             "MongoDB.Driver": {
               "target": "Package",
-              "version": "[2.28.0, )"
+              "version": "[2.23.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.5.0, )"
+            },
+            "itext7": {
+              "target": "Package",
+              "version": "[8.0.2, )"
             }
           },
           "imports": [

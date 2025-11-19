@@ -2,6 +2,7 @@
   "ExpandedNodes": [
     "",
     "\\backend",
+    "\\backend\\Models",
     "\\frontend"
   ],
   "SelectedNode": "\\backend\\appsettings.json",
