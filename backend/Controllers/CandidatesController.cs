@@ -43,7 +43,7 @@ public class CandidatesController : ControllerBase
                 return NotFound(new { message = $"Job posting with ID {jobId} not found" });
             }
 
-            var candidates = await _candidateService.GetCandidatesByJobIdAsync(jobId, status);
+            var candidates = await _candidateService.GetCandidatesByJobIdAsync(jobId);
             return Ok(candidates);
         }
         catch (Exception ex)
@@ -126,7 +126,7 @@ public class CandidatesController : ControllerBase
                     var cvText = await _cvParserService.ExtractTextFromPdfAsync(cvFilePath);
 
                     // Analyze with AI
-                    var aiAnalysis = await _llmAnalyzerService.AnalyzeCvAsync(cvText, job.Requirements);
+                    var aiAnalysis = await _llmAnalyzerService.AnalyzeCvAsync(cvText, job.Description, job.Requirements);
 
                     if (aiAnalysis != null)
                     {

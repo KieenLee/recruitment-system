@@ -4,18 +4,18 @@ using Backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Kestrel to use port 5175
-builder.WebHost.ConfigureKestrel(serverOptions =>
+// Configure Kestrel
+builder.WebHost.ConfigureKestrel(options =>
 {
-    serverOptions.ListenLocalhost(5175);
+    options.ListenLocalhost(5175);
 });
 
-// Add services to the container
+// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configure SQL Server with Entity Framework Core
+// Database contexts
 builder.Services.AddDbContext<SqlDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("SqlServerConnection"),
@@ -23,19 +23,21 @@ builder.Services.AddDbContext<SqlDbContext>(options =>
     )
 );
 
-// Configure MongoDB
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings")
 );
 builder.Services.AddSingleton<MongoDbContext>();
 
-// Register Services
-builder.Services.AddScoped<JobPostingService>();
-builder.Services.AddScoped<CandidateService>();
-builder.Services.AddScoped<LlmAnalyzerService>();
-builder.Services.AddScoped<CvParserService>();
+// Register HttpClient Factory
+builder.Services.AddHttpClient();
 
-// Add CORS
+// Register Services with Interfaces
+builder.Services.AddScoped<IJobPostingService, JobPostingService>();
+builder.Services.AddScoped<ICandidateService, CandidateService>();
+builder.Services.AddScoped<ILlmAnalyzerService, LlmAnalyzerService>();
+builder.Services.AddScoped<ICvParserService, CvParserService>();
+
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -49,14 +51,12 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.MapControllers();

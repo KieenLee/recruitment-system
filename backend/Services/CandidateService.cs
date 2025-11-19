@@ -7,95 +7,168 @@ namespace Backend.Services;
 
 public interface ICandidateService
 {
-    Task<string> CreateCandidateAsync(int jobId, ApplyCandidateDto dto, string cvFileName, string cvFilePath);
-    Task<CandidateResponseDto?> GetCandidateByIdAsync(string id);
-    Task<List<CandidateResponseDto>> GetCandidatesByJobIdAsync(int jobId, string? status = null);
+    Task<List<Candidate>> GetCandidatesByJobIdAsync(int jobId);
+    Task<Candidate?> GetCandidateByIdAsync(string candidateId);
+    Task<Candidate> CreateCandidateAsync(Candidate candidate);
+    Task<bool> UpdateCandidateStatusAsync(string candidateId, string status);
     Task<int> GetCandidateCountByJobIdAsync(int jobId);
-    Task<bool> UpdateCandidateStatusAsync(string id, string status);
-    Task<bool> UpdateCandidateAiAnalysisAsync(string id, AiAnalysis aiAnalysis);
+    Task<string> CreateCandidateAsync(int jobId, ApplyCandidateDto dto, string cvFileName, string cvFilePath);
+    Task<bool> UpdateCandidateAiAnalysisAsync(string candidateId, CvAnalysis aiAnalysis);
 }
 
 public class CandidateService : ICandidateService
 {
     private readonly MongoDbContext _mongoContext;
+    private readonly ILogger<CandidateService> _logger;
 
-    public CandidateService(MongoDbContext mongoContext)
+    public CandidateService(MongoDbContext mongoContext, ILogger<CandidateService> logger)
     {
         _mongoContext = mongoContext;
+        _logger = logger;
     }
 
+    public async Task<List<Candidate>> GetCandidatesByJobIdAsync(int jobId)
+    {
+        try
+        {
+            var filterBuilder = Builders<Candidate>.Filter;
+            var filter = filterBuilder.Eq(c => c.JobId, jobId);
+
+            var candidates = await _mongoContext.Candidates
+                .Find(filter)
+                .SortByDescending(c => c.UploadedAt)
+                .ToListAsync();
+
+            return candidates;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting candidates for job {JobId}", jobId);
+            return new List<Candidate>();
+        }
+    }
+
+    public async Task<Candidate?> GetCandidateByIdAsync(string candidateId)
+    {
+        try
+        {
+            var candidate = await _mongoContext.Candidates
+                .Find(c => c.Id == candidateId)
+                .FirstOrDefaultAsync();
+
+            return candidate;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting candidate {CandidateId}", candidateId);
+            return null;
+        }
+    }
+
+    public async Task<Candidate> CreateCandidateAsync(Candidate candidate)
+    {
+        try
+        {
+            await _mongoContext.Candidates.InsertOneAsync(candidate);
+            return candidate;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating candidate");
+            throw;
+        }
+    }
+
+    // ✅ New overload method for creating candidate from DTO
     public async Task<string> CreateCandidateAsync(int jobId, ApplyCandidateDto dto, string cvFileName, string cvFilePath)
     {
-        var candidate = new Candidate
+        try
         {
-            JobId = jobId,
-            FullName = dto.FullName,
-            Email = dto.Email,
-            Phone = dto.Phone,
-            CvFileName = cvFileName,
-            CvFilePath = cvFilePath,
-            Status = "Pending",
-            UploadedAt = DateTime.UtcNow
-        };
+            var candidate = new Candidate
+            {
+                JobId = jobId,
+                FullName = dto.FullName,
+                Email = dto.Email,
+                Phone = dto.Phone,
+                CvFileName = cvFileName,
+                CvFilePath = cvFilePath,
+                Status = "Pending",
+                UploadedAt = DateTime.UtcNow
+            };
 
-        await _mongoContext.Candidates.InsertOneAsync(candidate);
-        return candidate.Id;
-    }
+            await _mongoContext.Candidates.InsertOneAsync(candidate);
 
-    public async Task<CandidateResponseDto?> GetCandidateByIdAsync(string id)
-    {
-        var candidate = await _mongoContext.Candidates
-            .Find(c => c.Id == id)
-            .FirstOrDefaultAsync();
+            _logger.LogInformation("Created candidate {CandidateId} for job {JobId}", candidate.Id, jobId);
 
-        if (candidate == null) return null;
-
-        return MapToDto(candidate);
-    }
-
-    public async Task<List<CandidateResponseDto>> GetCandidatesByJobIdAsync(int jobId, string? status = null)
-    {
-        var filterBuilder = Builders<Candidate>.Filter;
-        var filter = filterBuilder.Eq(c => c.JobId, jobId);
-
-        if (!string.IsNullOrEmpty(status))
-        {
-            filter &= filterBuilder.Eq(c => c.Status, status);
+            return candidate.Id;
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating candidate for job {JobId}", jobId);
+            throw;
+        }
+    }
 
-        var candidates = await _mongoContext.Candidates
-            .Find(filter)
-            .SortByDescending(c => c.UploadedAt)
-            .ToListAsync();
+    public async Task<bool> UpdateCandidateStatusAsync(string candidateId, string status)
+    {
+        try
+        {
+            var filter = Builders<Candidate>.Filter.Eq(c => c.Id, candidateId);
+            var update = Builders<Candidate>.Update.Set(c => c.Status, status);
 
-        return candidates.Select(MapToDto).ToList();
+            var result = await _mongoContext.Candidates.UpdateOneAsync(filter, update);
+            return result.ModifiedCount > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating candidate {CandidateId} status", candidateId);
+            return false;
+        }
+    }
+
+    // ✅ New method to update AI analysis
+    public async Task<bool> UpdateCandidateAiAnalysisAsync(string candidateId, CvAnalysis aiAnalysis)
+    {
+        try
+        {
+            var filter = Builders<Candidate>.Filter.Eq(c => c.Id, candidateId);
+            var update = Builders<Candidate>.Update.Set(c => c.AiAnalysis, aiAnalysis);
+
+            var result = await _mongoContext.Candidates.UpdateOneAsync(filter, update);
+
+            if (result.ModifiedCount > 0)
+            {
+                _logger.LogInformation("Updated AI analysis for candidate {CandidateId}", candidateId);
+                return true;
+            }
+
+            _logger.LogWarning("No candidate found to update AI analysis for ID {CandidateId}", candidateId);
+            return false;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating AI analysis for candidate {CandidateId}", candidateId);
+            return false;
+        }
     }
 
     public async Task<int> GetCandidateCountByJobIdAsync(int jobId)
     {
-        var filter = Builders<Candidate>.Filter.Eq(c => c.JobId, jobId);
-        return (int)await _mongoContext.Candidates.CountDocumentsAsync(filter);
+        try
+        {
+            var filter = Builders<Candidate>.Filter.Eq(c => c.JobId, jobId);
+            var count = await _mongoContext.Candidates.CountDocumentsAsync(filter);
+            return (int)count;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error counting candidates for job {JobId}", jobId);
+            return 0;
+        }
     }
 
-    public async Task<bool> UpdateCandidateStatusAsync(string id, string status)
-    {
-        var filter = Builders<Candidate>.Filter.Eq(c => c.Id, id);
-        var update = Builders<Candidate>.Update.Set(c => c.Status, status);
-
-        var result = await _mongoContext.Candidates.UpdateOneAsync(filter, update);
-        return result.ModifiedCount > 0;
-    }
-
-    public async Task<bool> UpdateCandidateAiAnalysisAsync(string id, AiAnalysis aiAnalysis)
-    {
-        var filter = Builders<Candidate>.Filter.Eq(c => c.Id, id);
-        var update = Builders<Candidate>.Update.Set(c => c.AiAnalysis, aiAnalysis);
-
-        var result = await _mongoContext.Candidates.UpdateOneAsync(filter, update);
-        return result.ModifiedCount > 0;
-    }
-
-    private static CandidateResponseDto MapToDto(Candidate candidate)
+    // Helper method to map to DTO
+    public static CandidateResponseDto MapToDto(Candidate candidate)
     {
         return new CandidateResponseDto
         {
@@ -125,7 +198,8 @@ public class CandidateService : ICandidateService
                     Phone = candidate.AiAnalysis.ExtractedInformation.Phone,
                     Skills = candidate.AiAnalysis.ExtractedInformation.Skills,
                     Education = candidate.AiAnalysis.ExtractedInformation.Education,
-                    Experience = candidate.AiAnalysis.ExtractedInformation.Experience
+                    Experience = candidate.AiAnalysis.ExtractedInformation.Experience,
+                    YearsOfExperience = candidate.AiAnalysis.ExtractedInformation.YearsOfExperience
                 },
                 RedFlags = candidate.AiAnalysis.RedFlags,
                 AnalyzedAt = candidate.AiAnalysis.AnalyzedAt

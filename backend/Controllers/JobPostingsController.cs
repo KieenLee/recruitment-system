@@ -26,7 +26,7 @@ public class JobPostingsController : ControllerBase
     {
         try
         {
-            var jobPostings = await _jobPostingService.GetAllJobPostingsAsync(status);
+            var jobPostings = await _jobPostingService.GetAllJobPostingsAsync();
             return Ok(jobPostings);
         }
         catch (Exception ex)
