@@ -1,0 +1,362 @@
+.job-detail-page {
+  min-height: 100vh;
+  background: #f9fafb;
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Back Button */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 2rem;
+}
+
+.btn-back:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateX(-4px);
+}
+
+/* Layout */
+.job-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* ============================================
+   JOB INFO SECTION
+============================================ */
+.job-info-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.job-header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.company-logo-large {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.job-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.company-name {
+  font-size: 1.125rem;
+  color: #6b7280;
+}
+
+/* Job Meta */
+.job-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #4b5563;
+  font-size: 1rem;
+}
+
+.meta-item svg {
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+/* Job Description */
+.job-description,
+.job-requirements {
+  margin-bottom: 2rem;
+}
+
+.job-description h2,
+.job-requirements h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.job-description p,
+.job-requirements p {
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+/* ============================================
+   APPLY FORM SECTION
+============================================ */
+.apply-form-section {
+  position: sticky;
+  top: 2rem;
+}
+
+.apply-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.apply-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1.5rem;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  transition: all 0.2s;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-group input.error {
+  border-color: #ef4444;
+}
+
+.form-group small {
+  display: block;
+  color: #6b7280;
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.8125rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+/* File Upload */
+.file-upload {
+  position: relative;
+}
+
+.file-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.file-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #6b7280;
+  font-size: 0.9375rem;
+}
+
+.file-label:hover {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.file-label svg {
+  flex-shrink: 0;
+}
+
+/* Submit Button */
+.btn-submit {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.btn-submit:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   SUCCESS/ERROR STATES
+============================================ */
+.success-container,
+.error-container,
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.success-icon {
+  color: #10b981;
+  margin-bottom: 1.5rem;
+}
+
+.success-container h2 {
+  font-size: 2rem;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.success-container p {
+  color: #6b7280;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.success-container button,
+.error-container button {
+  margin-top: 2rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 0.875rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.success-container button:hover,
+.error-container button:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f4f6;
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+@media (max-width: 1024px) {
+  .job-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .apply-form-section {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .job-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .job-title {
+    font-size: 1.5rem;
+  }
+
+  .job-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .apply-card {
+    padding: 1.5rem;
+  }
+}

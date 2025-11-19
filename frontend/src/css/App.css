@@ -1,3 +1,4 @@
+/* Global Styles */
 * {
   margin: 0;
   padding: 0;
@@ -10,68 +11,91 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f8fafc;
-  color: #1e293b;
+  background: #f9fafb;
+  color: #1f2937;
 }
 
-.app {
-  min-height: 100vh;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
-/* 404 Page */
-.not-found {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  text-align: center;
-  padding: 2rem;
-}
-
-.not-found h1 {
-  font-size: 6rem;
-  color: #cbd5e1;
-  margin-bottom: 1rem;
-}
-
-.not-found p {
-  font-size: 1.5rem;
-  color: #64748b;
-  margin-bottom: 2rem;
-}
-
-.not-found a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  text-decoration: none;
-  border-radius: 12px;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.not-found a:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
-}
-
-/* Global Button Styles */
+/* Reset button styles */
 button {
   font-family: inherit;
 }
 
-/* Scrollbar Styles */
+/* Link styles */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Remove default list styles */
+ul,
+ol {
+  list-style: none;
+}
+
+/* Image responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mb-1 {
+  margin-bottom: 0.5rem;
+}
+.mb-2 {
+  margin-bottom: 1rem;
+}
+.mb-3 {
+  margin-bottom: 1.5rem;
+}
+.mb-4 {
+  margin-bottom: 2rem;
+}
+
+.mt-1 {
+  margin-top: 0.5rem;
+}
+.mt-2 {
+  margin-top: 1rem;
+}
+.mt-3 {
+  margin-top: 1.5rem;
+}
+.mt-4 {
+  margin-top: 2rem;
+}
+
+/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -81,10 +105,4 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
-}
-
-/* Selection */
-::selection {
-  background: #667eea;
-  color: white;
 }
