@@ -7,7 +7,7 @@ import {
 import Dashboard from "./components/Dashboard";
 import HrDashboard from "./pages/HrDashboard";
 import CandidatePortal from "./pages/CandidatePortal";
-import "./App.css";
+import "./css/App.css";
 
 function App() {
   return (
