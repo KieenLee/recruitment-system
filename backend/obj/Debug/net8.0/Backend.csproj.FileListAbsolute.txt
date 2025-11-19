@@ -152,3 +152,16 @@ D:\Workspace\Project_.Net\recruitment-system\backend\obj\Debug\net8.0\refint\Bac
 D:\Workspace\Project_.Net\recruitment-system\backend\obj\Debug\net8.0\Backend.pdb
 D:\Workspace\Project_.Net\recruitment-system\backend\obj\Debug\net8.0\Backend.genruntimeconfig.cache
 D:\Workspace\Project_.Net\recruitment-system\backend\obj\Debug\net8.0\ref\Backend.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.barcodes.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.bouncy-castle-connector.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.forms.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.io.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.kernel.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.layout.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.pdfa.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.sign.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.styledxmlparser.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.svg.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\itext.commons.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\Microsoft.DotNet.PlatformAbstractions.dll
+D:\Workspace\Project_.Net\recruitment-system\backend\bin\Debug\net8.0\Newtonsoft.Json.dll
